@@ -93,7 +93,7 @@ public class AcceptSalesGUI extends JFrame {
 		jTextFieldSearch.setBounds(52, 56, 357, 26);
 		getContentPane().add(jTextFieldSearch);
 		jTextFieldSearch.setColumns(10);
-		//jTextFieldSearch.setVisible(false); una modificación 2
+		//jTextFieldSearch.setVisible(false); una modificación 3
 		
 		 jButtonSearch.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
