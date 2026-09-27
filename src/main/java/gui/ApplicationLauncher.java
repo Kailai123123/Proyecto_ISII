@@ -20,10 +20,8 @@ public class ApplicationLauncher {
 	public static void main(String[] args) {
 		
 		try { 
-	        // 3. 全局设置按钮没有 3D 边框（强制消除你截图里那个老式按钮的凸起感）
 	        UIManager.put("Button.arc", 5); 
 	        
-	        // 4. 正式换上 FlatLaf 皮肤
 	        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
 	        
 	    } catch( Exception ex ) {

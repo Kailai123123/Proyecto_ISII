@@ -46,11 +46,10 @@
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-
-		<sonar.organization>jononekin</sonar.organization>
+		<sonar.organization>kailai123123</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.projectKey>jononekin_monopoly-euskara</sonar.projectKey>
-		<sonar.login>69f0b261f26fe8390be129e064c0bf84e7a4c3b1</sonar.login>
+		<sonar.projectKey>kailai123123_proyectoisii</sonar.projectKey>
+		<sonar.token>ddc7da49d7f4e8243b9ee4c95da5fab769b588ea</sonar.token>
 	</properties>
 
 	<!-- https://mvnrepository.com/artifact/junit/junit -->
@@ -148,6 +147,17 @@
 			<version>3.4.0</version>
 			<scope>test</scope>
 		</dependency>
+		
+		
+		
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-all</artifactId>
+		    <version>1.9.5</version>
+		    <scope>test</scope>
+		</dependency>
 
 	</dependencies>
+
 </project>
