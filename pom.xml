@@ -46,10 +46,10 @@
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<sonar.organization>kailai123123</sonar.organization>
+		<sonar.organization>kailai</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.projectKey>kailai123123_proyectoisii</sonar.projectKey>
-		<sonar.token>ddc7da49d7f4e8243b9ee4c95da5fab769b588ea</sonar.token>
+		<sonar.projectKey>kailai_proyectoisii</sonar.projectKey>
+		<sonar.token>c7532b1226f6d4c4d3e4bfca20503cbe634fcd73</sonar.token>
 	</properties>
 
 	<!-- https://mvnrepository.com/artifact/junit/junit -->
