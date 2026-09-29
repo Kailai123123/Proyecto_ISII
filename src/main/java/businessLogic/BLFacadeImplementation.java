@@ -22,6 +22,8 @@ import java.awt.image.BufferedImage;
 import java.awt.Image;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 /**
@@ -29,14 +31,18 @@ import java.io.IOException;
  */
 @WebService(endpointInterface = "businessLogic.BLFacade")
 public class BLFacadeImplementation  implements BLFacade {
-	 private static final int baseSize = 160;
+	
+	 private static final int BASE_SIZE = 160;
 
 		private static final String basePath="src/main/resources/images/";
 	DataAccess dbManager;
 
+	
+	private static final Logger LOGGER = Logger.getLogger(BLFacadeImplementation.class.getName());
+
 	public BLFacadeImplementation()  {		
-		System.out.println("Creating BLFacadeImplementation instance");
-		dbManager=new DataAccess();		
+		LOGGER.log(Level.INFO, "Creating BLFacadeImplementation instance");
+        dbManager = new DataAccess();	
 	}
 	
     public BLFacadeImplementation(DataAccess da)  {

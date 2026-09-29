@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import businessLogic.BLFacade;
 import domain.Buyer;
 import domain.Offer;
-import domain.Sale;
 import domain.Seller;
 import domain.User;
 

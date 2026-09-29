@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,20 +45,21 @@ public class DataAccess  {
 
 
 	ConfigXML c=ConfigXML.getInstance();
+	
+	public DataAccess() {
+	    if (c.isDatabaseInitialized()) {
+	        String fileName = c.getDbFilename();
 
-     public DataAccess()  {
-		if (c.isDatabaseInitialized()) {
-			String fileName=c.getDbFilename();
-
-			File fileToDelete= new File(fileName);
-			if(fileToDelete.delete()){
-				File fileToDeleteTemp= new File(fileName+"$");
-				fileToDeleteTemp.delete();
-				System.out.println("File deleted");
-			 } else {
-				 System.out.println("Operation failed");
-				}
-		}
+	        File fileToDelete = new File(fileName);
+	        try {
+	            Files.delete(fileToDelete.toPath());
+	            File fileToDeleteTemp = new File(fileName + "$");
+	            Files.deleteIfExists(fileToDeleteTemp.toPath());
+	            System.out.println("File deleted");
+	        } catch (IOException e) {
+	            System.out.println("Operation failed: " + e.getMessage());
+	        }
+	    }
 		open();
 		if  (c.isDatabaseInitialized()) 
 			initializeDB();
@@ -243,7 +245,7 @@ public class DataAccess  {
 		try {
              targetImg = rescale(ImageIO.read(file));
         } catch (IOException ex) {
-            //Logger.getLogger(MainAppFrame.class.getName()).log(Level.SEVERE, null, ex);
+        	throw new IllegalStateException("Error al cargar la imagen: " + fileName, ex);        
         }
 		return targetImg;
 

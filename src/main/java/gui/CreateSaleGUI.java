@@ -40,12 +40,15 @@ public class CreateSaleGUI extends JFrame {
 	private JTextField fieldTitle=new JTextField();
 	private JTextField fieldDescription=new JTextField();
 	
-	private JLabel jLabelTitle = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.Title"));
-	private JLabel jLabelDescription = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.Description")); 
-	private JLabel jLabelProductStatus = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.Status"));
-	private JLabel jLabelPrice = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.Price"));
-	private JTextField jTextFieldPrice = new JTextField();
+	private static final String ETIQUETAS = "Etiquetas";
 
+	private JLabel jLabelTitle = new JLabel(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.Title"));
+	private JLabel jLabelDescription = new JLabel(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.Description"));
+	private JLabel jLabelProductStatus = new JLabel(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.Status"));
+	private JLabel jLabelPrice = new JLabel(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.Price"));
+	private JTextField jTextFieldPrice = new JTextField();
+	
+	
 	private JCalendar jCalendar = new JCalendar();
 	private Calendar calendarAct = null;
 	private Calendar calendarAnt = null;
@@ -57,8 +60,8 @@ public class CreateSaleGUI extends JFrame {
 	List<String> status;
 
 
-	private JButton jButtonCreate = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.CreateProduct"));
-	private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+	private JButton jButtonCreate = new JButton(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.CreateProduct"));
+	private JButton jButtonClose = new JButton(ResourceBundle.getBundle(ETIQUETAS).getString("Close"));
 	private JLabel jLabelMsg = new JLabel();
 	private JLabel jLabelError = new JLabel();
 	private JFrame thisFrame;
@@ -75,7 +78,7 @@ public class CreateSaleGUI extends JFrame {
 		this.sellerMail=mail;
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(604, 370));
-		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.CreateProduct"));
+		this.setTitle(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.CreateProduct"));
 
 		jLabelTitle.setBounds(new Rectangle(6, 24, 92, 20));
 		
@@ -101,7 +104,7 @@ public class CreateSaleGUI extends JFrame {
 						String s=(String)jComboBoxStatus.getSelectedItem();
 						int numStatus=status.indexOf(s);
 						facade.createSale(fieldTitle.getText(), fieldDescription.getText(), numStatus, price,  UtilDate.trim(jCalendar.getDate()), sellerMail, targetFile);
-						jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.ProductCreated"));
+						jLabelMsg.setText(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.ProductCreated"));
 					
 					} catch (Exception e1) {
 
@@ -157,7 +160,7 @@ public class CreateSaleGUI extends JFrame {
 		jComboBoxStatus.setBounds(90, 183, 114, 27);
 		getContentPane().add(jComboBoxStatus);
 		
-		JButton btnNewButton = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.LoadPicture")); //$NON-NLS-1$ //$NON-NLS-2$
+		JButton btnNewButton = new JButton(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.LoadPicture")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -216,7 +219,7 @@ public class CreateSaleGUI extends JFrame {
 		jCalendar.setBounds(new Rectangle(360, 50, 225, 150));
 		this.getContentPane().add(jCalendar, null);
 		
-		JLabel jLabelPublicationDate = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.PublicationDate"));
+		JLabel jLabelPublicationDate = new JLabel(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.PublicationDate"));
 		jLabelPublicationDate.setBounds(new Rectangle(6, 24, 92, 20));
 		jLabelPublicationDate.setBounds(360, 26, 197, 20);
 		getContentPane().add(jLabelPublicationDate);
@@ -267,20 +270,20 @@ public class CreateSaleGUI extends JFrame {
 		
 		try {
 			if ((fieldTitle.getText().length()==0) || (fieldDescription.getText().length()==0)  || (jTextFieldPrice.getText().length()==0))
-				return ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.ErrorQuery");
+				return ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.ErrorQuery");
 			else {
 
 				// trigger an exception if the introduced string is not a number
 					float price = Float.parseFloat(jTextFieldPrice.getText());
 					if (price <= 0) 
-						return ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.PriceMustBeGreaterThan0");
+						return ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.PriceMustBeGreaterThan0");
 					
 					else 
 						return null;
 			}
 		} catch (java.lang.NumberFormatException e1) {
 
-			return  ResourceBundle.getBundle("Etiquetas").getString("CreateSaleGUI.ErrorNumber");		
+			return  ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.ErrorNumber");		
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			return null;
@@ -297,12 +300,8 @@ public  String encodeFileToBase64Binary(File file){
             fileInputStreamReader.read(bytes);
             encodedfile=new String(Base64.getEncoder().encode(bytes));
 
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new IllegalStateException("Error de lectura o archivo no encontrado", e);
         }
 
         return encodedfile;

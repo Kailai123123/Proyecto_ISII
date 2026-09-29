@@ -518,7 +518,7 @@ public class MainGUI extends JFrame {
 				if (usuario != null) {
 					JFrame carteraWindow = new WalletGUI(usuario.getEmail());
 					carteraWindow.setVisible(true);
-					carteraWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+					carteraWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
 				}
 			}
 		});
