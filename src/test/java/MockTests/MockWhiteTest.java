@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
 public class MockWhiteTest {
 
 	static DataAccess sut;
-
     protected MockedStatic<Persistence> persistenceMock;
 
     @Mock
