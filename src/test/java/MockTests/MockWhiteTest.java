@@ -124,7 +124,6 @@ public class MockWhiteTest {
     @Test
     public void test3() {
         int expectedSize = 0;
-        
         Mockito.when(mockBuyer.getEmail()).thenReturn(buyerMail);
         Buyer mockOtroComprador = Mockito.mock(Buyer.class);
         Mockito.when(mockOtroComprador.getEmail()).thenReturn("otro@mail.com");
