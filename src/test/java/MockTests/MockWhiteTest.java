@@ -70,7 +70,7 @@ public class MockWhiteTest {
     }
 
     @Test
-    public void testGetProductosComprados_Camino4() {
+    public void test1() {
         int expectedSize = 1;
 
         Mockito.when(mockBuyer.getEmail()).thenReturn(buyerMail);
