@@ -51,7 +51,7 @@
 		<sonar.projectKey>kailai_proyectoisii</sonar.projectKey>
 	</properties>
 
-	<!-- https://mvnrepository.com/artifact/junit/junit -->
+	<!-- https://mvnrepository.com/artifact/junit/junit z-->
 	<dependencies>
 		<dependency>
 		    <groupId>com.formdev</groupId>
