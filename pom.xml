@@ -49,7 +49,6 @@
 		<sonar.organization>kailai</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.projectKey>kailai_proyectoisii</sonar.projectKey>
-		<sonar.token>ddc7da49d7f4e8243b9ee4c95da5fab769b588ea</sonar.token>
 	</properties>
 
 	<!-- https://mvnrepository.com/artifact/junit/junit -->
