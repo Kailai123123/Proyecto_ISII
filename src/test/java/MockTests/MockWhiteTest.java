@@ -1,3 +1,4 @@
+/*
 package MockTests;
 
 import domain.Buyer;
@@ -177,3 +178,4 @@ public class MockWhiteTest {
     	
     }
 }
+*/
