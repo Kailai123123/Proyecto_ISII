@@ -320,6 +320,9 @@ public class DataAccess  {
 	}
 	
 	public List<Offer> getProductosComprados(Buyer bu, String desc) {
+		if (bu == null || desc == null) {
+		    return new ArrayList<Offer>();
+		}
 		System.out.println(">> DataAccess: getProducts=> ");
 		List<Offer> res = new ArrayList<Offer>();	
 		TypedQuery<Offer> query = db.createQuery("SELECT o FROM Offer o JOIN o.sale s WHERE s.title LIKE ?1",Offer.class);   

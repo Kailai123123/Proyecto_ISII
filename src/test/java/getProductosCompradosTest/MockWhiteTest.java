@@ -1,5 +1,4 @@
-/*
-package MockTests;
+package getProductosCompradosTest;
 
 import domain.Buyer;
 import domain.Offer;
@@ -25,10 +24,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MockWhiteTest {
 
 	static DataAccess sut;
@@ -93,7 +93,7 @@ public class MockWhiteTest {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
-            fail("falla el test1");
+            fail("White Mock test1");
         }
     }
     
@@ -117,7 +117,7 @@ public class MockWhiteTest {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
-            fail("falla test2");
+            fail("White Mock test2");
         }
     
     }
@@ -145,7 +145,7 @@ public class MockWhiteTest {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
-            fail("falla test3");
+            fail("White Mock test3");
         }
     	
     }
@@ -173,9 +173,39 @@ public class MockWhiteTest {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
-            fail("The method should not throw any exception.");
+            fail("White Mock Test4");
         }
     	
     }
+    
+    @Test
+    public void test5() {
+        try {
+            sut.open();
+            List<Offer> obtained = sut.getProductosComprados(null, "bicicleta");
+            sut.close();
+            
+            assertNotNull(obtained);
+            assertTrue(obtained.isEmpty());
+            
+        } catch (Exception e) {
+            fail("White Mock Test5");
+        }
+    }
+
+    @Test
+    public void test6() {
+        try {
+            sut.open();
+            List<Offer> obtained = sut.getProductosComprados(mockBuyer, null);
+            sut.close();
+            
+            assertNotNull(obtained);
+            assertTrue(obtained.isEmpty());
+            
+        } catch (Exception e) {
+            fail("White Mock Test6");
+        }
+    }
+    
 }
-*/
