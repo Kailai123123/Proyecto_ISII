@@ -70,7 +70,7 @@ public class MockBlackTest {
     public void tearDown() {
         persistenceMock.close();
     }
-/*
+
     @Test
     public void test1() {
         try {
@@ -130,7 +130,7 @@ public class MockBlackTest {
             fail("Black Mock Test4");
         }
     }
-*/
+
     @Test
     public void test5() {
         Mockito.when(mockOffer.getBuyer()).thenReturn(mockBuyer);
