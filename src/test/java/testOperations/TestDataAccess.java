@@ -18,40 +18,6 @@ import domain.Offer;
 import domain.Sale;
 import domain.Seller;
 
-/**
- *            ¡¡¡¡¡¡ESTO ME LO HA HECHO CHATI PQ TENIA Q HACERLO 
- *                   CON EL TESTDATAACCESS PERO NO ME SALIA BIEN COPIANDO EL SUYO!!!!!!!!!
- * 
- * =====================================================================================
- * EXPLICACIÓN DE CAMBIOS RESPECTO A LA PLANTILLA DEL PROFESOR
- * =====================================================================================
- * 
- * 1. ¿Por qué usamos esta clase?
- *    El profesor la utiliza para insertar y limpiar datos en la base de datos real
- *    sin mezclar métodos "sucios" de prueba dentro de la lógica de negocio (DataAccess).
- * 
- * 2. addSellerWithSaleAndOffer(...):
- *    El profesor en su ejemplo solo creaba vendedores y ventas (createSale). Como nuestro
- *    método (getProductosDevueltos) busca ofertas devueltas, tuvimos que crear este método
- *    para insertar toda la jerarquía junta: Seller -> Sale -> Offer (con su Buyer) y fijar
- *    el valor de 'accepted' (-2 para devuelto, 0 para pendiente, 1 para aceptado).
- * 
- * 3. addSaleWithoutSellerAndOffer(...):
- *    Creado específicamente para el caso de prueba CP9 (integridad/datos corruptos). Guarda
- *    una venta huérfana (seller = null) para verificar que el código lanza NullPointerException.
- * 
- * 4. removeSeller(...) mejorado:
- *    El profesor solo borraba ventas del vendedor. Aquí borramos en cascada las ofertas,
- *    las ventas y el vendedor. Además, añadimos una limpieza explícita de cualquier venta
- *    con título "futbol balon" para que la venta huérfana de CP9 no se quede en disco y no
- *    haga fallar los tests que van detrás (CP10, BDWhiteTest, etc.).
- * 
- * 5. Limpieza automática de .temp y .temp$ en open():
- *    Añadido para evitar el bloqueo típico de ObjectDB ("Recovery file does not match db file")
- *    sin tener que ir a Windows a borrar los archivos temporales a mano.
- * =====================================================================================
- */
-
 public class TestDataAccess {
 
 	private EntityManager db;
