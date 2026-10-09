@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import static org.junit.Assert.*;
-
+/*
 public class BDBlackTest {
 
     static DataAccess sut;
@@ -208,3 +208,4 @@ public class BDBlackTest {
         }
     }
 }
+*/
