@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
@@ -36,11 +37,14 @@ import exceptions.SaleAlreadyExistException;
  * It implements the data access to the objectDb database
  */
 public class DataAccess  {
+	
+	Logger logger = Logger.getLogger(getClass().getName());
+	
 	private  EntityManager  db;
 	private  EntityManagerFactory emf;
-    private static final int baseSize = 160;
+    private static final int BASESIZE = 160;
 
-	private static final String basePath="src/main/resources/images/";
+	private static final String BASEPATH="src/main/resources/images/";
 
 
 
@@ -55,9 +59,9 @@ public class DataAccess  {
 	            Files.delete(fileToDelete.toPath());
 	            File fileToDeleteTemp = new File(fileName + "$");
 	            Files.deleteIfExists(fileToDeleteTemp.toPath());
-	            System.out.println("File deleted");
+	            logger.info("File deleted");
 	        } catch (IOException e) {
-	            System.out.println("Operation failed: " + e.getMessage());
+	        	logger.info("Operation failed: " + e.getMessage());
 	        }
 	    }
 		open();
@@ -117,7 +121,7 @@ public class DataAccess  {
 			System.out.println("Db initialized");
 		}
 		catch (Exception e){
-			e.printStackTrace();
+			throw new RuntimeException("Error en initializeDB", e);
 		}
 	}
 	
@@ -135,24 +139,25 @@ public class DataAccess  {
  	 * @throws SaleAlreadyExistException if the same product already exists for the seller
 	 */
 	public Sale createSale(String title, String description, int status, float price,  Date pubDate, String sellerEmail, File file) throws  FileNotUploadedException, MustBeLaterThanTodayException, SaleAlreadyExistException {
-		
+	
+		String Etiquetas = "Etiquetas";
 
 		System.out.println(">> DataAccess: createProduct=> title= "+title+" seller="+sellerEmail);
 		try {
 		
 
 			if(pubDate.before(UtilDate.trim(new Date()))) {
-				throw new MustBeLaterThanTodayException(ResourceBundle.getBundle("Etiquetas").getString("DataAccess.ErrorSaleMustBeLaterThanToday"));
+				throw new MustBeLaterThanTodayException(ResourceBundle.getBundle(Etiquetas).getString("DataAccess.ErrorSaleMustBeLaterThanToday"));
 			}
 			if (file==null)
-				throw new FileNotUploadedException(ResourceBundle.getBundle("Etiquetas").getString("DataAccess.ErrorFileNotUploadedException"));
+				throw new FileNotUploadedException(ResourceBundle.getBundle(Etiquetas).getString("DataAccess.ErrorFileNotUploadedException"));
 
 			db.getTransaction().begin();
 			
 			Seller seller = db.find(Seller.class, sellerEmail);
 			if (seller.doesSaleExist(title)) {
 				db.getTransaction().commit();
-				throw new SaleAlreadyExistException(ResourceBundle.getBundle("Etiquetas").getString("DataAccess.SaleAlreadyExist"));
+				throw new SaleAlreadyExistException(ResourceBundle.getBundle(Etiquetas).getString("DataAccess.SaleAlreadyExist"));
 			}
 
 			Sale sale = seller.addSale(title, description, status, price, pubDate, file);
@@ -240,7 +245,7 @@ public class DataAccess  {
 	}
 
 	public BufferedImage getFile(String fileName) {
-		File file=new File(basePath+fileName);
+		File file=new File(BASEPATH+fileName);
 		BufferedImage targetImg=null;
 		try {
              targetImg = rescale(ImageIO.read(file));
@@ -254,9 +259,9 @@ public class DataAccess  {
 	public BufferedImage rescale(BufferedImage originalImage)
     {
 		System.out.println("rescale "+originalImage);
-        BufferedImage resizedImage = new BufferedImage(baseSize, baseSize, BufferedImage.TYPE_INT_RGB);
+        BufferedImage resizedImage = new BufferedImage(BASESIZE, BASESIZE, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, baseSize, baseSize, null);
+        g.drawImage(originalImage, 0, 0, BASESIZE, BASESIZE, null);
         g.dispose();
         return resizedImage;
     }

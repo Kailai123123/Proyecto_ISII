@@ -16,7 +16,6 @@ import exceptions.SaleAlreadyExistException;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
-import java.awt.image.BufferedImage;
 import java.awt.Image;
 
 import gui.*;
