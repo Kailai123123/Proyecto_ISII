@@ -49,6 +49,8 @@ public class DataAccess  {
 	private static final String BASEPATH="src/main/resources/images/";
 	
 	private static final String LOG_GET_PRODUCTS = ">> DataAccess: getProducts=> ";
+	
+	private static final String QUERY_OFFER = "SELECT o FROM Offer o JOIN o.sale s WHERE s.title LIKE ?1";
 
 
 
@@ -193,7 +195,7 @@ public class DataAccess  {
 	 * @return collection of products that contain desc in a title
 	 */
 	public List<Sale> getSales(String desc) {
-		System.out.println(">> DataAccess: getProducts=> from= "+desc);
+		System.out.println(LOG_GET_PRODUCTS + "from= "+desc);
 
 		List<Sale> res = new ArrayList<Sale>();	
 		TypedQuery<Sale> query = db.createQuery("SELECT s FROM Sale s WHERE s.title LIKE ?1",Sale.class);   
@@ -297,7 +299,7 @@ public class DataAccess  {
 	}
 	
 	public List<Offer> getOffers(Seller se, String desc) {
-		System.out.println(">> DataAccess: getProducts=> ");
+		System.out.println(LOG_GET_PRODUCTS);
 		List<Offer> res = new ArrayList<Offer>();	
 		TypedQuery<Offer> query = db.createQuery("SELECT o FROM Offer o JOIN o.sale s WHERE s.seller.email = ?1 AND s.title LIKE ?2",Offer.class);   
 		query.setParameter(1, se.getEmail());
@@ -313,10 +315,12 @@ public class DataAccess  {
 	 	return res;
 	}
 	
+	
+	
 	public List<Offer> getOffersComprador(Buyer bu, String desc) {
-		System.out.println(">> DataAccess: getProducts=> ");
+		System.out.println(LOG_GET_PRODUCTS);
 		List<Offer> res = new ArrayList<Offer>();	
-		TypedQuery<Offer> query = db.createQuery("SELECT o FROM Offer o JOIN o.sale s WHERE s.title LIKE ?1",Offer.class);   
+		TypedQuery<Offer> query = db.createQuery(QUERY_OFFER,Offer.class);   
 		query.setParameter(1, "%"+desc+"%");
 
 		List<Offer> offers = query.getResultList();
@@ -332,9 +336,9 @@ public class DataAccess  {
 		if (bu == null || desc == null) {
 		    return new ArrayList<Offer>();
 		}
-		System.out.println(">> DataAccess: getProducts=> ");
+		System.out.println(LOG_GET_PRODUCTS);
 		List<Offer> res = new ArrayList<Offer>();	
-		TypedQuery<Offer> query = db.createQuery("SELECT o FROM Offer o JOIN o.sale s WHERE s.title LIKE ?1",Offer.class);   
+		TypedQuery<Offer> query = db.createQuery(QUERY_OFFER,Offer.class);   
 		query.setParameter(1, "%"+desc+"%");
 
 		List<Offer> offers = query.getResultList();
@@ -351,9 +355,9 @@ public class DataAccess  {
 	}
 	
 	public List<Offer> getProductosDevueltos(Seller se, String desc) {
-		System.out.println(">> DataAccess: getProducts=> ");
+		System.out.println(LOG_GET_PRODUCTS);
 		List<Offer> res = new ArrayList<Offer>();	
-		TypedQuery<Offer> query = db.createQuery("SELECT o FROM Offer o JOIN o.sale s WHERE s.title LIKE ?1",Offer.class);   
+		TypedQuery<Offer> query = db.createQuery(QUERY_OFFER,Offer.class);   
 		query.setParameter(1, "%"+desc+"%");
 
 		List<Offer> offers = query.getResultList();

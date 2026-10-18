@@ -35,7 +35,7 @@ public class BLFacadeImplementation  implements BLFacade {
 	
 	 private static final int BASE_SIZE = 160;
 
-		private static final String basePath="src/main/resources/images/";
+	private static final String basePath="src/main/resources/images/";
 	DataAccess dbManager;
 
 	
