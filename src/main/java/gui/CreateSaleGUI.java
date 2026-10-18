@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 
 import businessLogic.BLFacade;
 import configuration.UtilDate;
+import domain.SaleDetails;
 
 
 public class CreateSaleGUI extends JFrame {
@@ -103,7 +104,15 @@ public class CreateSaleGUI extends JFrame {
 						float price = Float.parseFloat(jTextFieldPrice.getText());
 						String s=(String)jComboBoxStatus.getSelectedItem();
 						int numStatus=status.indexOf(s);
-						facade.createSale(fieldTitle.getText(), fieldDescription.getText(), numStatus, price,  UtilDate.trim(jCalendar.getDate()), sellerMail, targetFile);
+						SaleDetails details = new SaleDetails(
+							    fieldTitle.getText(), 
+							    fieldDescription.getText(), 
+							    numStatus, 
+							    price, 
+							    UtilDate.trim(jCalendar.getDate()), 
+							    targetFile
+							);
+						facade.createSale(sellerMail, details);
 						jLabelMsg.setText(ResourceBundle.getBundle(ETIQUETAS).getString("CreateSaleGUI.ProductCreated"));
 					
 					} catch (Exception e1) {

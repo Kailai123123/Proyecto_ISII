@@ -3,6 +3,7 @@ package getProductosCompradosTest;
 import domain.Buyer;
 import domain.Offer;
 import domain.Sale;
+import domain.SaleDetails;
 import domain.Seller;
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +52,9 @@ public class BDBlackTest {
             
             Date manana = new Date(System.currentTimeMillis() + 86400000L);
             File fotoBD = new File("imagen_falsa_cajanegra.jpg");
-            sale = sut.createSale(title, desc, 1, 100f, manana, sellerEmail, fotoBD);
+            
+            SaleDetails details = new SaleDetails(title, desc, 1, 100f, manana, fotoBD);
+            sale = sut.createSale(sellerEmail, details);
             
             sut.createOferta(sale, 90f, buyer); 
             sut.close();
@@ -73,6 +76,8 @@ public class BDBlackTest {
             if (sale != null) testDA.removeSale(sale);
             testDA.removeUsuario(buyerEmail);
             testDA.removeUsuario(sellerEmail);
+            testDA.removeSaleByTitle(title);
+            testDA.limpiarDatosResiduales(buyerEmail, title);
             testDA.close();
         } catch (Exception e) {
             System.out.println("Error en tearDown: " + e.getMessage());
@@ -97,8 +102,7 @@ public class BDBlackTest {
     public void test2() {
         try {
             sut.open();
-            Buyer buyerConectado = (Buyer) sut.getUsuario(buyerEmail);
-            List<Offer> obtained = sut.getProductosComprados(buyerConectado, null);
+            List<Offer> obtained = sut.getProductosComprados(buyer, null);
             sut.close();
             
             assertNotNull(obtained);
@@ -130,9 +134,14 @@ public class BDBlackTest {
             testDA.close();
 
             sut.open();
-            List<Offer> obtained = sut.getProductosComprados(buyer, title);
+            Buyer newBuyer = (Buyer) sut.getUsuario(buyerEmail);
+            List<Offer> obtained = sut.getProductosComprados(newBuyer, title);
             sut.close();
-
+            
+            System.out.println("查到的数量: " + obtained.size());
+        	if(!obtained.isEmpty()){
+        		System.out.println("查到的状态: " + obtained.get(0).getAccepted());
+        	}
             assertNotNull(obtained);
             assertTrue(obtained.isEmpty());
         } catch (Exception e) {
@@ -144,7 +153,8 @@ public class BDBlackTest {
     public void test5() {
         try {
             sut.open();
-            List<Offer> obtained = sut.getProductosComprados(buyer, title);
+            Buyer newBuyer = (Buyer) sut.getUsuario(buyerEmail);
+            List<Offer> obtained = sut.getProductosComprados(newBuyer, title);
             sut.close();
             
             assertNotNull(obtained);
@@ -162,7 +172,8 @@ public class BDBlackTest {
             sut.open();
             Date manana = new Date(System.currentTimeMillis() + 86400000L);
             File fotoBD2 = new File("imagen.jpg");
-            Sale sale2 = sut.createSale(title + " 2", "Segunda bici para CP6", 1, 200f, manana, sellerEmail, fotoBD2);
+            SaleDetails details2 = new SaleDetails(title + " 2", "Segunda bici para CP6", 1, 200f, manana, fotoBD2);
+            Sale sale2 = sut.createSale(sellerEmail, details2);
             sut.createOferta(sale2, 180f, buyer);
             sut.close();
 
@@ -188,7 +199,8 @@ public class BDBlackTest {
             sut.open();
             Date manana = new Date(System.currentTimeMillis() + 86400000L);
             File fotoBD2 = new File("imagen.jpg");
-            Sale saleDistinta = sut.createSale("PatineteBD", "Un patinete para CP7", 1, 150f, manana, sellerEmail, fotoBD2);
+            SaleDetails details2 = new SaleDetails("PatineteBD", "Un patinete para CP7", 1, 150f, manana, fotoBD2);
+            Sale saleDistinta = sut.createSale(sellerEmail, details2);
             sut.createOferta(saleDistinta, 100f, buyer);
             sut.close();
 

@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -27,6 +28,7 @@ import domain.User;
 import domain.Buyer;
 import domain.Offer;
 import domain.Sale;
+import domain.SaleDetails;
 import domain.Transaccion;
 import domain.Mensaje;
 import exceptions.FileNotUploadedException;
@@ -45,6 +47,8 @@ public class DataAccess  {
     private static final int BASESIZE = 160;
 
 	private static final String BASEPATH="src/main/resources/images/";
+	
+	private static final String LOG_GET_PRODUCTS = ">> DataAccess: getProducts=> ";
 
 
 
@@ -98,18 +102,25 @@ public class DataAccess  {
 			//Create products
 			Date today = UtilDate.trim(new Date());
 		
+			SaleDetails details = new SaleDetails("futbol baloia", "oso polita, gutxi erabilita", 10, 2,  today, null);
+			seller1.addSale(details);
+			details = new SaleDetails("salomon mendiko botak", "44 zenbakia, 3 ateraldi",20,  2,  today, null);
+			seller1.addSale(details);
+			details = new SaleDetails("samsung 42\" telebista", "berria, erabili gabe", 175, 1,  today, null);
+			seller1.addSale(details);
+
+			details = new SaleDetails("imac 27", "7 urte, dena ondo dabil", 1, 200,today, null);
+			seller2.addSale(details);
+			details = new SaleDetails("iphone 17", "oso gutxi erabilita", 2, 400, today, null);
+			seller2.addSale(details);
 			
-			seller1.addSale("futbol baloia", "oso polita, gutxi erabilita", 10, 2,  today, null);
-			seller1.addSale("salomon mendiko botak", "44 zenbakia, 3 ateraldi",20,  2,  today, null);
-			seller1.addSale("samsung 42\" telebista", "berria, erabili gabe", 175, 1,  today, null);
+			details = new SaleDetails("orbea mendiko bizikleta", "29\" 10 urte, mantenua behar du", 3,225, today, null);
+			seller2.addSale(details);
+			details = new SaleDetails("polar kilor erlojua", "Vantage M, ondo dago", 3, 30, today, null);
+			seller2.addSale(details);
 
-
-			seller2.addSale("imac 27", "7 urte, dena ondo dabil", 1, 200,today, null);
-			seller2.addSale("iphone 17", "oso gutxi erabilita", 2, 400, today, null);
-			seller2.addSale("orbea mendiko bizikleta", "29\" 10 urte, mantenua behar du", 3,225, today, null);
-			seller2.addSale("polar kilor erlojua", "Vantage M, ondo dago", 3, 30, today, null);
-
-			seller3.addSale("sukaldeko mahaia", "1.8*0.8, 4 aulkiekin. Prezio finkoa", 3,45, today, null);
+			details = new SaleDetails("sukaldeko mahaia", "1.8*0.8, 4 aulkiekin. Prezio finkoa", 3,45, today, null);
+			seller3.addSale(details);
 
 			
 			db.persist(seller1);
@@ -138,48 +149,41 @@ public class DataAccess  {
 	 * @return Product
  	 * @throws SaleAlreadyExistException if the same product already exists for the seller
 	 */
-	public Sale createSale(String title, String description, int status, float price,  Date pubDate, String sellerEmail, File file) throws  FileNotUploadedException, MustBeLaterThanTodayException, SaleAlreadyExistException {
+	public Sale createSale(String sellerEmail, SaleDetails details) throws FileNotUploadedException, MustBeLaterThanTodayException, SaleAlreadyExistException {
+	    validateSaleInputs(details); 
+
+	    db.getTransaction().begin();
+	    try {
+	        Seller seller = db.find(Seller.class, sellerEmail);
+	        checkSaleExistence(seller, details.getTitle());
+	        
+	        Sale sale = seller.addSale(details);
+	        db.persist(seller); 
+	        db.getTransaction().commit();
+	        logger.info("Sale stored: " + sale.getTitle());
+	        return sale;
+	    } catch (NullPointerException e) {
+	        logger.log(Level.INFO, "Error en createSale", e);
+	        db.getTransaction().commit();
+	        return null;
+	    }
+	}
 	
-		String Etiquetas = "Etiquetas";
-
-		System.out.println(">> DataAccess: createProduct=> title= "+title+" seller="+sellerEmail);
-		try {
-		
-
-			if(pubDate.before(UtilDate.trim(new Date()))) {
-				throw new MustBeLaterThanTodayException(ResourceBundle.getBundle(Etiquetas).getString("DataAccess.ErrorSaleMustBeLaterThanToday"));
-			}
-			if (file==null)
-				throw new FileNotUploadedException(ResourceBundle.getBundle(Etiquetas).getString("DataAccess.ErrorFileNotUploadedException"));
-
-			db.getTransaction().begin();
-			
-			Seller seller = db.find(Seller.class, sellerEmail);
-			if (seller.doesSaleExist(title)) {
-				db.getTransaction().commit();
-				throw new SaleAlreadyExistException(ResourceBundle.getBundle(Etiquetas).getString("DataAccess.SaleAlreadyExist"));
-			}
-
-			Sale sale = seller.addSale(title, description, status, price, pubDate, file);
-			//next instruction can be obviated
-
-			db.persist(seller); 
-			db.getTransaction().commit();
-			 System.out.println("sale stored "+sale+ " "+seller);
-
-			
-
-			   System.out.println("hasta aqui");
-
-			return sale;
-		} catch (NullPointerException e) {
-			   e.printStackTrace();
-			// TODO Auto-generated catch block
-			db.getTransaction().commit();
-			return null;
-		}
-		
-		
+	private void validateSaleInputs(SaleDetails details) throws MustBeLaterThanTodayException, FileNotUploadedException {
+	    String etiquetas = "Etiquetas";
+	    if(details.getDate().before(UtilDate.trim(new Date()))) {
+	        throw new MustBeLaterThanTodayException(ResourceBundle.getBundle(etiquetas).getString("DataAccess.ErrorSaleMustBeLaterThanToday"));
+	    }
+	    if (details.getFile() == null) {
+	        throw new FileNotUploadedException(ResourceBundle.getBundle(etiquetas).getString("DataAccess.ErrorFileNotUploadedException"));
+	    }
+	}
+	
+	private void checkSaleExistence(Seller seller, String title) throws SaleAlreadyExistException {
+	    if (seller.doesSaleExist(title)) {
+	        db.getTransaction().commit();
+	        throw new SaleAlreadyExistException(ResourceBundle.getBundle("Etiquetas").getString("DataAccess.SaleAlreadyExist"));
+	    }
 	}
 	
 	/**
@@ -335,13 +339,15 @@ public class DataAccess  {
 
 		List<Offer> offers = query.getResultList();
 	 	 for (Offer offer:offers){
-	 		 if(offer.getBuyer().getEmail().equals(bu.getEmail())) {
-	 			 if(offer.getAccepted()==1) {
-	 				 res.add(offer);
-	 			 }
+	 		 if(isOfertaAceptadaDelComprador(offer, bu)) {
+	 			res.add(offer);
 	 		 }
 		  }
 	 	return res;
+	}
+	
+	private boolean isOfertaAceptadaDelComprador(Offer offer, Buyer bu) {
+	    return offer.getBuyer().getEmail().equals(bu.getEmail()) && offer.getAccepted() == 1;
 	}
 	
 	public List<Offer> getProductosDevueltos(Seller se, String desc) {
@@ -361,32 +367,40 @@ public class DataAccess  {
 	 	return res;
 	}
 	
-	public void aceptarOferta(Offer o){	
-		db.getTransaction().begin();
-	
-	    Sale v = db.find(Sale.class, o.getSale().getSaleNumber()); 
+	public void aceptarOferta(Offer o) {
+	    db.getTransaction().begin();
+	    Sale v = db.find(Sale.class, o.getSale().getSaleNumber());
 	    User comprador = db.find(User.class, o.getBuyer().getEmail());
 	    User vendedor = db.find(User.class, v.getSeller().getEmail());
-	    float precioFinal = o.getOfferedPrice();
-	    float a=comprador.getSaldo();
-	    comprador.setSaldo(comprador.getSaldo() - precioFinal);
-	    comprador.addTransaccion(precioFinal, "COBRO", "Pago por: " + v.getTitle(), a, a-precioFinal);
+
+	    procesarTransaccionEconomica(comprador, vendedor, o.getOfferedPrice(), v.getTitle());
+	    actualizarEstadoVentaYOfertas(v, o);
+
+	    db.getTransaction().commit();
+	}
+
+	private void procesarTransaccionEconomica(User comprador, User vendedor, float precioFinal, String titulo) {
+	    float saldoComprador = comprador.getSaldo();
+	    comprador.setSaldo(saldoComprador - precioFinal);
+	    comprador.addTransaccion(precioFinal, "COBRO", "Pago por: " + titulo, saldoComprador, saldoComprador - precioFinal);
 	    db.persist(comprador);
-	    float b=vendedor.getSaldo();
-	    vendedor.setSaldo(vendedor.getSaldo() + precioFinal);
-	    vendedor.addTransaccion(precioFinal, "INGRESO", "Venta de: " + v.getTitle(), b, b+precioFinal);
+
+	    float saldoVendedor = vendedor.getSaldo();
+	    vendedor.setSaldo(saldoVendedor + precioFinal);
+	    vendedor.addTransaccion(precioFinal, "INGRESO", "Venta de: " + titulo, saldoVendedor, saldoVendedor + precioFinal);
 	    db.persist(vendedor);
-	    
-	    for(Offer of:v.getOfertas()) {
-	    	if(of.equals(o)) {
-	    		of.setAccepted(1);
-	    	}else {
-	    		of.setAccepted(-1);
-	    	}
+	}
+
+	private void actualizarEstadoVentaYOfertas(Sale v, Offer o) {
+	    for (Offer of : v.getOfertas()) {
+	        if (of.equals(o)) {
+	            of.setAccepted(1);
+	        } else {
+	            of.setAccepted(-1);
+	        }
 	    }
 	    v.setVendido(true);
 	    db.persist(v);
-		db.getTransaction().commit();	
 	}
 	
 	//Parte 3, eliminar oferta pendiente de un comprador

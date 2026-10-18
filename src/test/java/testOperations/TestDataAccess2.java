@@ -127,11 +127,49 @@ public class TestDataAccess2 {
             Offer o = db.find(Offer.class, offer.getOfferId());
             if (o != null) {
                 o.setAccepted(0);
-                db.merge(o);
             }
             db.getTransaction().commit();
         } catch (Exception e) {
             db.getTransaction().rollback();
+            e.printStackTrace();
+        }
+    }
+    
+    public void removeSaleByTitle(String title) {
+        db.getTransaction().begin();
+        TypedQuery<Sale> query = db.createQuery("SELECT s FROM Sale s WHERE s.title = :t", Sale.class);
+        query.setParameter("t", title);
+        for (Sale s : query.getResultList()) {
+            if (s.getOfertas() != null) {
+                for (Offer o : s.getOfertas()) {
+                    db.remove(o);
+                }
+            }
+            db.remove(s);
+        }
+        db.getTransaction().commit();
+    }
+    
+    public void limpiarDatosResiduales(String buyerEmail, String title) {
+        db.getTransaction().begin();
+        try {
+            TypedQuery<Offer> q1 = db.createQuery("SELECT o FROM Offer o WHERE o.buyer.email = ?1 OR o.sale.title = ?2", Offer.class);
+            q1.setParameter(1, buyerEmail);
+            q1.setParameter(2, title);
+            for (Offer o : q1.getResultList()) {
+                db.remove(o);
+            }
+
+            TypedQuery<Sale> q2 = db.createQuery("SELECT s FROM Sale s WHERE s.title = ?1", Sale.class);
+            q2.setParameter(1, title);
+            for (Sale s : q2.getResultList()) {
+                db.remove(s);
+            }
+            db.getTransaction().commit();
+        } catch (Exception e) {
+            if (db.getTransaction().isActive()) {
+                db.getTransaction().rollback();
+            }
             e.printStackTrace();
         }
     }

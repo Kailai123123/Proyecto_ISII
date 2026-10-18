@@ -16,6 +16,7 @@ import configuration.ConfigXML;
 import domain.Buyer;
 import domain.Offer;
 import domain.Sale;
+import domain.SaleDetails;
 import domain.Seller;
 
 public class TestDataAccess {
@@ -69,6 +70,7 @@ public class TestDataAccess {
 	public Offer addSellerWithSaleAndOffer(String sellerEmail, String sellerName, String saleTitle, String saleDesc, int accepted) {
 		db.getTransaction().begin();
 		try {
+			SaleDetails details = new SaleDetails(saleTitle, saleDesc, 0, 10f, new Date(), null);
 			Seller seller = db.find(Seller.class, sellerEmail);
 			if (seller == null) {
 				seller = new Seller(sellerEmail, sellerName, "1234");
@@ -82,7 +84,7 @@ public class TestDataAccess {
 				db.persist(buyer);
 			}
 
-			Sale sale = seller.addSale(saleTitle, saleDesc, 0, 10f, new Date(), null);
+			Sale sale = seller.addSale(details);
 			db.persist(sale);
 
 			Offer offer = new Offer(buyer, 10f, sale);

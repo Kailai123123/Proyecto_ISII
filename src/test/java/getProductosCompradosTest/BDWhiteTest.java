@@ -3,6 +3,7 @@ package getProductosCompradosTest;
 import domain.Buyer;
 import domain.Offer;
 import domain.Sale;
+import domain.SaleDetails;
 import domain.Seller;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +53,8 @@ public class BDWhiteTest {
             
             File fotoBD = new File("imagen_falsa.jpg");
             Date manana = new Date(System.currentTimeMillis() + 86400000L);
-            sale = sut.createSale(title, desc, 1, 100f, manana, sellerEmail, fotoBD);
+            SaleDetails details = new SaleDetails("BiciBD", "Bicicleta", 0, 100.5f, manana, fotoBD);
+            sale = sut.createSale(sellerEmail, details);
             
             sut.createOferta(sale, 90f, buyer); 
             sut.close();

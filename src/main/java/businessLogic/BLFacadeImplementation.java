@@ -11,6 +11,7 @@ import domain.Buyer;
 import domain.Mensaje;
 import domain.Offer;
 import domain.Sale;
+import domain.SaleDetails;
 import domain.Seller;
 import domain.User;
 import domain.Transaccion;
@@ -55,9 +56,9 @@ public class BLFacadeImplementation  implements BLFacade {
 	 * {@inheritDoc}
 	 */
    @WebMethod
-	public Sale createSale(String title, String description,int status, float price, Date pubDate, String sellerEmail, File file) throws  FileNotUploadedException, MustBeLaterThanTodayException, SaleAlreadyExistException {
+	public Sale createSale(String sellerEmail, SaleDetails details) throws  FileNotUploadedException, MustBeLaterThanTodayException, SaleAlreadyExistException {
 		dbManager.open();
-		Sale product=dbManager.createSale(title, description, status, price, pubDate, sellerEmail, file);		
+		Sale product=dbManager.createSale(sellerEmail, details);		
 		dbManager.close();
 		return product;
    };

@@ -57,12 +57,13 @@ public class Seller extends User implements Serializable {
 	
 
 
-	public Sale addSale(String title, String description, int status, float price,  Date pubDate, File file)  {
-		
-		Sale sale=new Sale(title, description, status, price,  pubDate, file, this);
-        sales.add(sale);
-        return sale;
+	public Sale addSale(SaleDetails details) {
+	    Sale sale = new Sale(details.getTitle(), details.getDesc(), details.getStatus(), details.getPrice(), details.getDate(), details.getFile(), this);
+	    sales.add(sale);
+	    return sale;
 	}
+	
+	
 	/**
 	 * This method checks if the ride already exists for that driver
 	 * 
