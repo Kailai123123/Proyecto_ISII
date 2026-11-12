@@ -108,6 +108,8 @@ public class Seller extends User implements Serializable {
 	public void setCantVal(int cantVal) {
 		this.cantVal = cantVal;
 	}
-
+	public List<Sale> getSales() {
+	    return sales;
+	}
 	
 }

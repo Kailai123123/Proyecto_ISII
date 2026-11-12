@@ -18,6 +18,7 @@ import domain.Transaccion;
 import exceptions.FileNotUploadedException;
 import exceptions.MustBeLaterThanTodayException;
 import exceptions.SaleAlreadyExistException;
+import iterator.ExtendedIterator;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -25,6 +26,8 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import iterator.ExtendedIterator;
+import iterator.ExtendedIteratorSales;
 
 
 /**
@@ -285,6 +288,11 @@ public class BLFacadeImplementation  implements BLFacade {
 		dbManager.open();
         dbManager.setValoracion(v,sellerEmail);
         dbManager.close();
+	}
+	@Override
+	public ExtendedIterator<Sale> getSalesIterator(String desc) {
+	    List<Sale> sales = getSales(desc);
+	    return new ExtendedIteratorSales(sales);
 	}
 }
 

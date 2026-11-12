@@ -20,6 +20,7 @@ import javax.jws.WebService;
 import java.awt.Image;
 
 import gui.*;
+import iterator.ExtendedIterator;
 /**
  * Interface that specifies the business logic.
  */
@@ -94,5 +95,5 @@ public interface BLFacade  {
 	public double getValoracion(String sellerEmail);
 	public int getNumVals(String sellerEmail);
 	public void setValoracion(double v, String sellerEmail);
-
+	public ExtendedIterator<Sale> getSalesIterator(String desc);
 }
